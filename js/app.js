@@ -31,5 +31,6 @@ function calculateBalance() {
     for (var i = 0; i < transactions.length; i++) {
         balance += transactions[i];
     }
+    
     return balance;
 }
