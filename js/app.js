@@ -4,20 +4,6 @@ var amountHolder = document.getElementById('amount');
 var storeButton = document.getElementById('store');
 var transactions = [];
 
-function Episode(title, length) {
-    this.title = title;
-    this.length = length;
-    this.watch = function () {
-        return "Watching " + this.title + " for " + this.length + " minutes";
-    }
-}
-
-var ep = new Episode("valami", 50);
-var ep2 = new Episode("valami más", 60)
-
-console.log(ep.watch());
-console.log(ep2.watch());
-
 storeButton.addEventListener('click', function addAmount() {
     if (isTransactionValid(amountHolder, dateTimeHolder)) {
         var intValue = parseInt(amountHolder.value);
@@ -29,15 +15,32 @@ storeButton.addEventListener('click', function addAmount() {
 })
 
 function isTransactionValid(amountHolder, dateTimeHolder) {
-    var amountValid = true;
+    var amountValid = validateAmount(amountHolder);
+    var datetimeValid = validateDate(dateTimeHolder);
+    return amountValid && datetimeValid;
+}
+
+function validateDate(dateTimeHolder) {
     var datetimeValid = true;
+    var date = new Date(dateTimeHolder.value);
+    if (date.toString() === "Invalid Date") {
+        datetimeValid = false;
+        dateTimeHolder.classList.add('invalid');
+    } else {
+        dateTimeHolder.classList.remove('invalid');
+    }
+    return datetimeValid;
+}
+
+function validateAmount(amountHolder) {
+    var amountValid = true;
     if (isNaN(parseInt(amountHolder.value))) {
         amountValid = false;
         amountHolder.classList.add('invalid');
     } else {
         amountHolder.classList.remove('invalid');
     }
-    return amountValid && datetimeValid;
+    return amountValid;
 }
 
 function calculateBalance() {
