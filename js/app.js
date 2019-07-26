@@ -3,24 +3,46 @@ var balanceHolder = document.getElementById('balance');
 var amountHolder = document.getElementById('amount');
 var storeButton = document.getElementById('store');
 var transactionsListContainer = document.getElementById("transactions");
+var transactionRowTemplate = document.querySelector('.transactions-row-template');
+
 var transactions = [];
+
+insertTransactionRow(5000, new Date());
+insertTransactionRow(-2000, new Date());
 
 storeButton.addEventListener('click', function addAmount() {
     if (isTransactionValid(amountHolder, dateTimeHolder)) {
         var intValue = parseInt(amountHolder.value);
         var date = new Date(dateTimeHolder.value);
-        transactions.push({
-            "amount": intValue,
-            "date": date
-        });
-        var listItem = document.createElement("li");
-        listItem.textContent = date.toDateString() + " - " + intValue + " Ft ";
-        transactionsListContainer.appendChild(listItem);
+        insertTransactionRow(intValue, date);
         amountHolder.value = '';
         dateTimeHolder.value = '';
-        balanceHolder.textContent = calculateBalance();
     }
 })
+
+function insertTransactionRow(amount, date) {
+    transactions.push({
+        "amount": amount,
+        "date": date
+    });
+    var listItem = transactionRowTemplate.cloneNode(true);
+    listItem.querySelector('.transaction-id').textContent = transactions.length - 1;
+    listItem.querySelector('.transaction-date').textContent = date.toDateString();
+    listItem.querySelector('.transaction-amount').textContent = amount + " Ft";
+    var deleteButton = listItem.querySelector('.delete-transaction');
+    deleteButton.setAttribute('data-id', transactions.length - 1)
+    deleteButton.addEventListener('click', deleteTransactionRow);
+    transactionsListContainer.appendChild(listItem);
+    balanceHolder.textContent = calculateBalance();
+}
+
+function deleteTransactionRow(event) {
+    var id = event.target.getAttribute('data-id');
+    transactions.splice(id, 1);
+    var row = event.target.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+    balanceHolder.textContent = calculateBalance();
+}
 
 function isTransactionValid(amountHolder, dateTimeHolder) {
     var amountValid = validateAmount(amountHolder);

@@ -1,3 +1,7 @@
 .invalid {
     border: solid 2px red;
 }
+
+#templates {
+    display: none;
+}

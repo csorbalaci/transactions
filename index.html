@@ -3,15 +3,31 @@
 
 <head>
     <meta charset="UTF8">
-    <link rel="stylesheet" href="css/app.css"
-</head>
-
-<body>
+    <link rel="stylesheet" href="css/app.css" </head> <body>
     <input type="text" id="datetime" placeholder="Tranzakció időpontja">
     <input type="text" id="amount" placeholder="összeg"><button id="store">Rögzít</button>
     <p>Az egyenleged: <span id="balance">0</span></p>
-    <ul id="transactions"></ul>
+    <table id="transactions">
+        <tr>
+            <th>#</th>
+            <th>Dátum</th>
+            <th>Összeg</th>
+            <th>Műveletek</th>
+        </tr>
+    </table>
+    <div id="tempaltes">
+        <table>
+            <tr class="transactions-row-template" class="trancastion-row transactions-row-template">
+                <td class="transaction-id"></td>
+                <td class="transaction-date"></td>
+                <td class="transaction-amount"></td>
+                <td class="transaction-operations">
+                    <button class="delete-transaction" data-id="">Törlés</button>
+                </td>
+            </tr>
+        </table>
+    </div>
     <script src="js/app.js"></script>
-</body>
+    </body>
 
 </html>
