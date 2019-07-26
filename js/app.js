@@ -10,6 +10,9 @@ var transactions = [];
 insertTransactionRow(5000, new Date());
 insertTransactionRow(-2000, new Date());
 
+var json = JSON.stringify(transactions);
+
+
 storeButton.addEventListener('click', function addAmount() {
     if (isTransactionValid(amountHolder, dateTimeHolder)) {
         var intValue = parseInt(amountHolder.value);
