@@ -2,14 +2,22 @@ var dateTimeHolder = document.getElementById('datetime');
 var balanceHolder = document.getElementById('balance');
 var amountHolder = document.getElementById('amount');
 var storeButton = document.getElementById('store');
+var transactionsListContainer = document.getElementById("transactions");
 var transactions = [];
 
 storeButton.addEventListener('click', function addAmount() {
     if (isTransactionValid(amountHolder, dateTimeHolder)) {
         var intValue = parseInt(amountHolder.value);
-        transactions.push(intValue);
-        console.log(transactions);
+        var date = new Date(dateTimeHolder.value);
+        transactions.push({
+            "amount": intValue,
+            "date": date
+        });
+        var listItem = document.createElement("li");
+        listItem.textContent = date.toDateString() + " - " + intValue + " Ft ";
+        transactionsListContainer.appendChild(listItem);
         amountHolder.value = '';
+        dateTimeHolder.value = '';
         balanceHolder.textContent = calculateBalance();
     }
 })
@@ -46,7 +54,7 @@ function validateAmount(amountHolder) {
 function calculateBalance() {
     var balance = 0;
     for (var i = 0; i < transactions.length; i++) {
-        balance += transactions[i];
+        balance += transactions[i].amount;
     }
-    return balance;
+    return balance + " Ft";
 }
