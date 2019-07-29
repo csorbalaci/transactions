@@ -5,8 +5,7 @@ var storeButton = document.getElementById('store');
 var saveButton = document.getElementById('save');
 var transactionsListContainer = document.getElementById("transactions");
 var transactionRowTemplate = document.querySelector('.transactions-row-template');
-var toastTemplate = document.querySelector('.toast-template');
-var toastContainer = document.getElementById('toast-container');
+var showToast = toasts(2000).showToast;
 
 var transactions = getTransactions();
 transactions.forEach(function (transaction, index) {
@@ -16,16 +15,6 @@ transactions.forEach(function (transaction, index) {
 function saveTransactions() {
     localStorage.setItem("transactions", JSON.stringify(transactions));
     showToast("Mentve!");
-}
-
-function showToast(message) {
-    var toast = toastTemplate.cloneNode(true);
-    toast.textContent = message;
-    toast.classList.add('show');
-    toastContainer.appendChild(toast);
-    setTimeout(function () {
-        toast.remove();
-    }, 3000)
 }
 
 setInterval(saveTransactions, 20000);
