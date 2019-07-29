@@ -2,38 +2,29 @@ var dateTimeHolder = document.getElementById('datetime');
 var balanceHolder = document.getElementById('balance');
 var amountHolder = document.getElementById('amount');
 var storeButton = document.getElementById('store');
+var saveButton = document.getElementById('save');
 var transactionsListContainer = document.getElementById("transactions");
 var transactionRowTemplate = document.querySelector('.transactions-row-template');
 
-function getTransaction(id, callback) {
-    console.log("Getting transaction #" + id + ".")
-    callback(id);
-}
-
-getTransaction(5, function (id) {
-    logTransaction(id, function reallyLogTransaction(id) {
-        console.log("Transactions #" + id ++ + " seriously received.");
-    });
-});
-
-function logTransaction(id, callback) {
-    console.log("Transactions #" + id + " retrieved.")
-    callback(id);
-}
-
-function reallyLogTransaction(id) {
-    console.log("Transactions #" + id + " seriously received.")
-}
-
 var transactions = getTransactions();
 transactions.forEach(function (transaction, index) {
-    insertTransactionRow(transaction.amount, new Date(transaction.date), index);
+    insertTransactionRow(transaction.amount, transaction.date, index);
 });
+
+function saveTransactions() {
+    console.log("saved!");
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+}
+
+setInterval(saveTransactions, 20000);
+
+saveButton.addEventListener('click', saveTransactions);
+
 storeButton.addEventListener('click', function addAmount() {
     if (isTransactionValid(amountHolder, dateTimeHolder)) {
         var intValue = parseInt(amountHolder.value);
         var date = new Date(dateTimeHolder.value);
-        saveTransaction(amount, date);
+        addTransaction(intValue, date);
         insertTransactionRow(intValue, date, transactions.length - 1);
         amountHolder.value = '';
         dateTimeHolder.value = '';
@@ -42,16 +33,20 @@ storeButton.addEventListener('click', function addAmount() {
 
 function getTransactions() {
     var transactionsString = localStorage.getItem("transactions");
-    return transactionsString ? JSON.parse(transactionsString) : [];
+    var transactions = transactionsString ? JSON.parse(transactionsString) : [];
+    return transactions.map(function (transaction) {
+        return {
+            "amount": transaction.amount,
+            "date": new Date(transaction.date)
+        };
+    })
 }
 
-function saveTransaction(amount, date) {
+function addTransaction(amount, date) {
     transactions.push({
         "amount": amount,
         "date": date
     });
-    var transactionsString = JSON.stringify(transactions);
-    localStorage.setItem("transactions", transactionsString)
 }
 
 function insertTransactionRow(amount, date, index) {
