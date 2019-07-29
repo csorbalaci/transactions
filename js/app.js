@@ -6,14 +6,14 @@ var saveButton = document.getElementById('save');
 var transactionsListContainer = document.getElementById("transactions");
 var transactionRowTemplate = document.querySelector('.transactions-row-template');
 var showToast = toasts(2000).showToast;
+var transactionStore = storage();
 
-var transactions = getTransactions();
-transactions.forEach(function (transaction, index) {
+transactionStore.getTransactions().forEach(function (transaction, index) {
     insertTransactionRow(transaction.amount, transaction.date, index);
 });
 
 function saveTransactions() {
-    localStorage.setItem("transactions", JSON.stringify(transactions));
+    transactionStore.save;
     showToast("Mentve!");
 }
 
@@ -23,33 +23,14 @@ saveButton.addEventListener('click', saveTransactions);
 
 storeButton.addEventListener('click', function addAmount() {
     if (isTransactionValid(amountHolder, dateTimeHolder)) {
-        var intValue = parseInt(amountHolder.value);
+        var amount = parseInt(amountHolder.value);
         var date = new Date(dateTimeHolder.value);
-        addTransaction(intValue, date);
-        insertTransactionRow(intValue, date, transactions.length - 1);
+        transactionStore.add(amount, date);
+        insertTransactionRow(amount, date, transactions.length - 1);
         amountHolder.value = '';
         dateTimeHolder.value = '';
     }
 })
-
-function getTransactions() {
-    var transactionsString = localStorage.getItem("transactions");
-    var transactions = transactionsString ? JSON.parse(transactionsString) : [];
-    return transactions.map(function (transaction) {
-        return {
-            "amount": transaction.amount,
-            "date": new Date(transaction.date)
-        };
-    })
-}
-
-function addTransaction(amount, date) {
-    transactions.push({
-        "amount": amount,
-        "date": date
-    });
-}
-
 function insertTransactionRow(amount, date, index) {
     var listItem = transactionRowTemplate.cloneNode(true);
     listItem.querySelector('.transaction-id').textContent = index;
@@ -64,7 +45,7 @@ function insertTransactionRow(amount, date, index) {
 
 function deleteTransactionRow(event) {
     var id = event.target.getAttribute('data-id');
-    transactions.splice(id, 1);
+    transactionStore.remove(id);
     var row = event.target.parentNode.parentNode;
     row.parentNode.removeChild(row);
     balanceHolder.textContent = calculateBalance();
