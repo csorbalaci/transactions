@@ -12,7 +12,7 @@ function getTransaction(id, callback) {
 
 getTransaction(5, function (id) {
     logTransaction(id, function reallyLogTransaction(id) {
-        console.log("Transactions #" + id + " seriously received.");
+        console.log("Transactions #" + id ++ + " seriously received.");
     });
 });
 
