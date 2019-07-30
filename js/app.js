@@ -10,6 +10,8 @@ transactionStore.getTransactions().forEach(function (transaction, index) {
     list.insertTransactionRow(transaction.amount, transaction.date, index, onDeleteTransactionRow);
 });
 
+list.setBalance(calculateBalance() + " Ft");
+
 function saveTransactions() {
     transactionStore.save;
     showToast("Mentve!");
@@ -24,15 +26,21 @@ storeButton.addEventListener('click', function addAmount() {
         var amount = parseInt(amountHolder.value);
         var date = new Date(dateTimeHolder.value);
         transactionStore.add(amount, date);
-        list.insertTransactionRow(amount, date, transactions.length - 1, onDeleteTransactionRow);
+        list.insertTransactionRow(amount, date, transactionStore.getNumberOfTransactions() - 1, onDeleteTransactionRow);
+        list.setBalance(calculateBalance() + " Ft");
         amountHolder.value = '';
         dateTimeHolder.value = '';
     }
 })
 
-function onDeleteTransactionRow(index) {
+function onDeleteTransactionRow(event, index) {
+    if (calculateBalance() < 100000) {
+    list.deleteTransactionRow(event)
     transactionStore.remove(index);
-    list.setBalance(calculateBalance());
+    list.setBalance(calculateBalance() + " Ft");
+    } else {
+        showToast("Biztosan törölni akarsz tömm, mint 100000 ft-ot?");
+    }
 }
 
 function isTransactionValid(amountHolder, dateTimeHolder) {
@@ -70,5 +78,5 @@ function calculateBalance() {
     for (var i = 0; i < transactions.length; i++) {
         balance += transactions[i].amount;
     }
-    return balance + " Ft";
+    return balance;
 }

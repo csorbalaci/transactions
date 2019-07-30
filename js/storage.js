@@ -21,14 +21,16 @@ function storage() {
         });
     }
 
-
-
-    function save() {
-        localStorage.setItem("transactions", JSON.stringify(transactions));
+    function getNumberOfTransactions() {
+        return transactions.length;
     }
 
     function remove(index) {
         transactions.splice(index, 1);
+    }
+
+    function save() {
+        localStorage.setItem("transactions", JSON.stringify(transactions));
     }
 
     function add(amount, date) {
@@ -41,6 +43,7 @@ function storage() {
     return {
         save: save,
         add: add,
+        getNumberOfTransactions: getNumberOfTransactions,
         getTransactions: getTransactions,
         remove: remove
     }
