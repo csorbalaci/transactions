@@ -26,7 +26,7 @@ function transactionList() {
 
     return {
         setBalance: setBalance,
-        deleteTransactionRow : deleteTransactionRow,
+        deleteTransactionRow: deleteTransactionRow,
         insertTransactionRow: insertTransactionRow
     }
 }
