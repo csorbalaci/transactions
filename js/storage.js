@@ -21,6 +21,8 @@ function storage() {
         });
     }
 
+
+
     function save() {
         localStorage.setItem("transactions", JSON.stringify(transactions));
     }
