@@ -1,12 +1,37 @@
 (function () {
 
-    post("https://httpbin.org/post", JSON.stringify({ valami: true }), function () {
-        if (this.readyState === 4) {
-            console.log(this.responseText)
-        }
-    }, function () {
-        console.log("Error " + this.responseText)
-    });
+    function post(url, payload) {
+        return new Promise(function (resolve, reject) {
+            var request = new XMLHttpRequest;
+            request.open("POST", url);
+            request.addEventListener("error", reject);
+            request.addEventListener("timeout", reject);
+            request.addEventListener("load", function () {
+                if (this.status === 200) {
+                    resolve(this.responseText);
+                } else {
+                    reject(this.responseText);
+                }
+            });
+            request.send(payload);
+        })
+    }
+
+    Promise.all([
+        post("https://httpbin.org/post", JSON.stringify({ valami: 1 })),
+        post("https://httpbin.org/pst", JSON.stringify({ valami: 2 })),
+        post("https://httpbin.org/post", JSON.stringify({ valami: 3 }))
+    ]).then(function (first, second, third) {
+        console.log(first, second, third);
+    })
+        .catch(errorCallback)
+        .then(function () {
+            console.log("done everything!");
+        })
+
+    function errorCallback(responseText) {
+        console.log("Error response: " + responseText)
+    }
 
     form(onSaveTransactions, onSuccesfulSave);
     var list = transactionList();
@@ -19,21 +44,6 @@
 
     setInterval(onSaveTransactions, 20000);
     list.setBalance(calculateBalance() + " Ft");
-
-    function post(url, payload, successCallback, errorCallback) {
-        var request = new XMLHttpRequest;
-        request.open("POST", url);
-        request.addEventListener("error", errorCallback);
-        request.addEventListener("timeout", errorCallback);
-        request.addEventListener("load", function () {
-            if (this.status === 200) {
-                successCallback.bind(request)();
-            } else {
-                errorCallback.bind(request)();
-            }
-        });
-        request.send(payload);
-    }
 
     function onSaveTransactions() {
         transactionStore.save();
