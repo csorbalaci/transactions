@@ -1,36 +1,27 @@
 (function () {
 
     function post(url, payload) {
-        return new Promise(function (resolve, reject) {
-            var request = new XMLHttpRequest;
-            request.open("POST", url);
-            request.addEventListener("error", reject);
-            request.addEventListener("timeout", reject);
-            request.addEventListener("load", function () {
-                if (this.status === 200) {
-                    resolve(this.responseText);
-                } else {
-                    reject(this.responseText);
-                }
-            });
-            request.send(payload);
-        })
+        return fetch(url, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }).then(function (response) {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return Promise.reject(response.text())
+            }
+        });
     }
 
-    Promise.all([
-        post("https://httpbin.org/post", JSON.stringify({ valami: 1 })),
-        post("https://httpbin.org/pst", JSON.stringify({ valami: 2 })),
-        post("https://httpbin.org/post", JSON.stringify({ valami: 3 }))
-    ]).then(function (first, second, third) {
-        console.log(first, second, third);
-    })
-        .catch(errorCallback)
-        .then(function () {
-            console.log("done everything!");
+    post("https://httpbin.org/post", { valami: true })
+        .then(function (responseJson) {
+            console.log(responseJson);
         })
+        .catch(errorCallback);
 
-    function errorCallback(responseText) {
-        console.log("Error response: " + responseText)
+    function errorCallback(rejectedPromise) {
+        // rejectedPromise.then(console.log);
+        return "error";
     }
 
     form(onSaveTransactions, onSuccesfulSave);
